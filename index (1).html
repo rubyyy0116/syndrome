@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Name — Blog & Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --bg:#f7f5f0;
+  --surface:#ffffff;
+  --border:#e8e4dc;
+  --text-primary:#1a1816;
+  --text-secondary:#6b6560;
+  --text-muted:#a09890;
+  --accent:#7c6f5e;
+  --accent-light:#ede9e1;
+  --tag-bg:#f0ede6;
+  --sidebar-w:240px;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+  --topbar-h:56px;
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);min-height:100vh;}
+
+/* ── MOBILE TOPBAR ── */
+.mobile-topbar{
+  display:none;
+  position:sticky;top:0;z-index:200;
+  height:var(--topbar-h);
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 16px;
+  align-items:center;
+  justify-content:space-between;
+}
+.mobile-topbar .site-title{font-family:var(--serif);font-size:1.1rem;letter-spacing:-.01em;}
+.hamburger{
+  width:36px;height:36px;border:none;background:none;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  cursor:pointer;padding:6px;border-radius:6px;
+}
+.hamburger span{display:block;height:1.5px;background:var(--text-primary);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* ── SIDEBAR OVERLAY ── */
+.sidebar-overlay{
+  display:none;
+  position:fixed;inset:0;z-index:150;
+  background:rgba(0,0,0,0);
+  transition:background .25s;
+  pointer-events:none;
+}
+.sidebar-overlay.open{background:rgba(0,0,0,0.28);pointer-events:all;}
+
+/* ── SITE WRAP ── */
+.site-wrap{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+aside{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  position:sticky;
+  top:0;height:100vh;
+  overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+aside::-webkit-scrollbar{width:3px;}
+aside::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+.sidebar-inner{padding:28px 20px 48px;flex:1;}
+
+.profile{margin-bottom:28px;}
+.avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--accent-light);border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:1.3rem;color:var(--accent);
+  margin-bottom:12px;
+}
+.profile-name{font-family:var(--serif);font-size:1.05rem;letter-spacing:-.01em;margin-bottom:2px;}
+.profile-handle{font-size:.75rem;color:var(--text-muted);letter-spacing:.02em;margin-bottom:8px;}
+.profile-bio{font-size:.78rem;color:var(--text-secondary);line-height:1.65;font-style:italic;}
+
+.sidebar-divider{height:1px;background:var(--border);margin:0 0 20px;}
+
+.sidebar-section-title{
+  font-size:.65rem;font-weight:500;letter-spacing:.1em;
+  color:var(--text-muted);text-transform:uppercase;
+  padding:16px 8px 6px;
+}
+
+nav ul{list-style:none;}
+nav ul li a{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 8px;font-size:.82rem;
+  color:var(--text-secondary);text-decoration:none;
+  border-radius:6px;transition:background .15s,color .15s;
+}
+nav ul li a:hover,nav ul li a.active{background:var(--accent-light);color:var(--text-primary);}
+nav ul li a svg{width:14px;height:14px;stroke:currentColor;flex-shrink:0;}
+
+.cat-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 8px;font-size:.82rem;
+  color:var(--text-secondary);
+  border-radius:6px;transition:background .15s,color .15s;cursor:pointer;
+  user-select:none;
+}
+.cat-item:hover,.cat-item.active{background:var(--accent-light);color:var(--text-primary);}
+.cat-count{font-size:.7rem;color:var(--text-muted);}
+
+.ext-box{
+  margin-top:24px;background:var(--accent-light);
+  border-radius:10px;padding:12px 14px;
+}
+.ext-box-title{font-size:.65rem;letter-spacing:.08em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;}
+.ext-link{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 0;font-size:.8rem;color:var(--text-secondary);
+  text-decoration:none;border-bottom:1px solid var(--border);transition:color .15s;
+}
+.ext-link:last-child{border-bottom:none;}
+.ext-link:hover{color:var(--text-primary);}
+.ext-link svg{width:11px;height:11px;stroke:currentColor;opacity:.5;}
+
+/* ── MAIN ── */
+main{flex:1;min-width:0;display:flex;flex-direction:column;}
+
+/* Banner */
+.site-banner{
+  width:100%;height:220px;background:#c8c0b0;
+  overflow:hidden;position:relative;flex-shrink:0;
+}
+.site-banner img{width:100%;height:100%;object-fit:cover;opacity:.82;}
+.banner-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(247,245,240,.55) 100%);
+}
+.banner-name{
+  position:absolute;bottom:22px;left:32px;
+  font-family:var(--serif);font-size:1.9rem;color:#fff;
+  text-shadow:0 1px 10px rgba(0,0,0,.2);letter-spacing:-.02em;
+}
+
+.main-inner{padding:32px 36px 60px;flex:1;}
+
+/* Section */
+.section{margin-bottom:52px;}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;flex-wrap:wrap;gap:10px;
+}
+.section-header h2{font-family:var(--serif);font-size:1.35rem;font-weight:400;letter-spacing:-.02em;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.post-count{font-size:.75rem;color:var(--text-muted);}
+
+/* Search */
+.search-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:7px 14px;margin-bottom:18px;
+}
+.search-wrap svg{width:14px;height:14px;stroke:var(--text-muted);flex-shrink:0;}
+.search-wrap input{
+  border:none;background:transparent;outline:none;
+  font-family:var(--sans);font-size:.83rem;
+  color:var(--text-primary);width:100%;
+}
+.search-wrap input::placeholder{color:var(--text-muted);}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap;}
+.filter-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+.tab-btn{
+  padding:5px 13px;border-radius:20px;
+  border:1px solid var(--border);background:transparent;
+  font-family:var(--sans);font-size:.75rem;
+  color:var(--text-secondary);cursor:pointer;transition:all .15s;
+}
+.tab-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--text-primary);}
+.tab-btn.active{background:var(--text-primary);border-color:var(--text-primary);color:#fff;}
+
+/* View toggle */
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
+.view-btn{
+  width:33px;height:30px;border:none;background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s;
+}
+.view-btn+.view-btn{border-left:1px solid var(--border);}
+.view-btn:hover{background:var(--accent-light);}
+.view-btn.active{background:var(--text-primary);}
+.view-btn svg{width:14px;height:14px;stroke:var(--text-secondary);}
+.view-btn.active svg{stroke:#fff;}
+
+/* ── POSTS CONTAINER ── */
+#postsContainer{}
+
+/* Gallery grid */
+.post-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.post-grid .card-featured{grid-column:span 2;}
+
+.post-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+  text-decoration:none;color:inherit;display:block;
+  transition:transform .2s,box-shadow .2s;
+}
+.post-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.07);}
+
+.card-thumb{width:100%;aspect-ratio:4/3;display:block;}
+.card-featured .card-thumb{aspect-ratio:16/9;}
+
+.card-body{padding:13px 15px 15px;}
+.card-tag{
+  display:inline-block;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);background:var(--tag-bg);border-radius:4px;padding:2px 7px;margin-bottom:7px;
+}
+.card-title{font-family:var(--serif);font-size:.92rem;line-height:1.4;font-weight:400;margin-bottom:5px;}
+.card-featured .card-title{font-size:1.1rem;}
+.card-excerpt{font-size:.75rem;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;}
+.card-date{font-size:.7rem;color:var(--text-muted);}
+
+/* List view */
+.post-list{display:flex;flex-direction:column;}
+.post-list-item{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--border);
+  text-decoration:none;color:inherit;
+  transition:opacity .15s;
+}
+.post-list-item:last-child{border-bottom:none;}
+.post-list-item:hover{opacity:.75;}
+.list-thumb{width:72px;height:54px;border-radius:7px;flex-shrink:0;}
+.list-meta{flex:1;min-width:0;}
+.list-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.list-tag{
+  font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--accent);background:var(--tag-bg);border-radius:3px;padding:2px 6px;flex-shrink:0;
+}
+.list-title{
+  font-family:var(--serif);font-size:.95rem;font-weight:400;
+  line-height:1.35;margin-bottom:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.list-excerpt{
+  font-size:.73rem;color:var(--text-secondary);line-height:1.5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.list-date{font-size:.68rem;color:var(--text-muted);flex-shrink:0;}
+
+/* hidden helper */
+.hidden{display:none!important;}
+
+/* ── PORTFOLIO ── */
+.portfolio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.project-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:20px 22px;
+  text-decoration:none;color:inherit;display:block;
+  transition:transform .2s,box-shadow .2s;position:relative;
+}
+.project-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.07);}
+.project-icon{font-size:1.4rem;margin-bottom:12px;}
+.project-arrow{position:absolute;top:20px;right:20px;font-size:.85rem;color:var(--text-muted);}
+.project-name{font-family:var(--serif);font-size:.98rem;font-weight:400;margin-bottom:6px;}
+.project-desc{font-size:.78rem;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;}
+.project-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.project-tag{font-size:.65rem;padding:2px 7px;border:1px solid var(--border);border-radius:4px;color:var(--text-muted);}
+
+/* thumb colors */
+.t1{background:linear-gradient(135deg,#d4cfc6,#b8b2a6);}
+.t2{background:linear-gradient(135deg,#c6cfd4,#a6b2b8);}
+.t3{background:linear-gradient(135deg,#cfd4c6,#b2b8a6);}
+.t4{background:linear-gradient(135deg,#d4c6c6,#b8a6a6);}
+.t5{background:linear-gradient(135deg,#c6d4d0,#a6b8b4);}
+.t6{background:linear-gradient(135deg,#d4d0c6,#b8b4a6);}
+.t7{background:linear-gradient(135deg,#cac6d4,#ada6b8);}
+
+footer{
+  text-align:center;padding:20px;font-size:.72rem;
+  color:var(--text-muted);border-top:1px solid var(--border);
+  background:var(--surface);
+}
+
+/* ══════════════════
+   RESPONSIVE
+══════════════════ */
+@media(max-width:900px){
+  aside{
+    position:fixed;top:0;left:0;z-index:160;
+    height:100%;width:260px;
+    transform:translateX(-100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  aside.open{
+    transform:translateX(0);
+    box-shadow:4px 0 24px rgba(0,0,0,.1);
+  }
+  .mobile-topbar{display:flex;}
+  .sidebar-overlay{display:block;}
+  .site-banner{height:180px;}
+  .banner-name{font-size:1.5rem;left:20px;bottom:16px;}
+  .main-inner{padding:22px 20px 48px;}
+  .post-grid{grid-template-columns:repeat(2,1fr);}
+  .post-grid .card-featured{grid-column:span 2;}
+  .portfolio-grid{grid-template-columns:1fr;}
+}
+
+@media(max-width:560px){
+  .post-grid{grid-template-columns:1fr!important;}
+  .post-grid .card-featured{grid-column:span 1;}
+  .post-grid .card-featured .card-thumb{aspect-ratio:4/3;}
+  .site-banner{height:140px;}
+  .main-inner{padding:16px 14px 40px;}
+  .section-header h2{font-size:1.1rem;}
+  .filter-tabs{gap:4px;}
+  .tab-btn{padding:4px 10px;font-size:.72rem;}
+  .list-excerpt{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <span class="site-title">your name</span>
+  <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="site-wrap">
+
+<!-- ── SIDEBAR ── -->
+<aside id="sidebar">
+  <div class="sidebar-inner">
+    <div class="profile">
+      <div class="avatar">Y</div>
+      <div class="profile-name">Your Name</div>
+      <div class="profile-handle">@yourhandle</div>
+      <div class="profile-bio">글 쓰는 개발자.<br>잔잔한 것들을 좋아합니다.</div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <nav>
+      <ul>
+        <li><a href="#blog" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
+        </a></li>
+        <li><a href="#portfolio" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Portfolio
+        </a></li>
+        <li><a href="#contact" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact
+        </a></li>
+      </ul>
+      <div class="sidebar-section-title">Category</div>
+      <ul id="catList">
+        <li><span class="cat-item active" data-cat="all">전체 <span class="cat-count">11</span></span></li>
+        <li><span class="cat-item" data-cat="일상">일상 <span class="cat-count">3</span></span></li>
+        <li><span class="cat-item" data-cat="개발">개발 <span class="cat-count">4</span></span></li>
+        <li><span class="cat-item" data-cat="사진">사진 <span class="cat-count">2</span></span></li>
+        <li><span class="cat-item" data-cat="여행">여행 <span class="cat-count">2</span></span></li>
+      </ul>
+    </nav>
+    <div class="ext-box">
+      <div class="ext-box-title">Links</div>
+      <a href="https://github.com" class="ext-link" target="_blank">
+        GitHub
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <a href="https://linkedin.com" class="ext-link" target="_blank">
+        LinkedIn
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <a href="https://twitter.com" class="ext-link" target="_blank">
+        Twitter / X
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="site-banner">
+    <!-- <img src="banner.jpg" alt=""/> -->
+    <div class="banner-overlay"></div>
+    <div class="banner-name">your name</div>
+  </div>
+
+  <div class="main-inner">
+
+    <!-- BLOG -->
+    <div class="section" id="blog">
+      <div class="section-header">
+        <h2>최근 글</h2>
+        <div class="header-right">
+          <span class="post-count" id="postCount">11 posts</span>
+          <div class="view-toggle">
+            <button class="view-btn active" id="btnGallery" title="갤러리">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </button>
+            <button class="view-btn" id="btnList" title="목록">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="검색어를 입력하세요"/>
+      </div>
+
+      <div class="toolbar">
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab-btn active" data-cat="all">전체</button>
+          <button class="tab-btn" data-cat="일상">일상</button>
+          <button class="tab-btn" data-cat="개발">개발</button>
+          <button class="tab-btn" data-cat="사진">사진</button>
+          <button class="tab-btn" data-cat="여행">여행</button>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div class="post-grid" id="galleryGrid"></div>
+      <!-- List -->
+      <div class="post-list hidden" id="listView"></div>
+    </div>
+
+    <!-- PORTFOLIO -->
+    <div class="section" id="portfolio">
+      <div class="section-header">
+        <h2>포트폴리오</h2>
+        <span class="post-count">selected works</span>
+      </div>
+      <div class="portfolio-grid">
+        <a class="project-card" href="#">
+          <div class="project-icon">🌿</div><div class="project-arrow">↗</div>
+          <div class="project-name">Personal Garden App</div>
+          <div class="project-desc">식물 관리 일지를 기록하는 모바일 앱. React Native와 Firebase로 개발했습니다.</div>
+          <div class="project-tags"><span class="project-tag">React Native</span><span class="project-tag">Firebase</span><span class="project-tag">Design</span></div>
+        </a>
+        <a class="project-card" href="#">
+          <div class="project-icon">🗺️</div><div class="project-arrow">↗</div>
+          <div class="project-name">Travel Log Dashboard</div>
+          <div class="project-desc">여행 기록을 지도 위에 시각화하는 웹 대시보드. D3.js와 Mapbox를 활용했습니다.</div>
+          <div class="project-tags"><span class="project-tag">Next.js</span><span class="project-tag">D3.js</span><span class="project-tag">Mapbox</span></div>
+        </a>
+        <a class="project-card" href="#">
+          <div class="project-icon">✍️</div><div class="project-arrow">↗</div>
+          <div class="project-name">Minimal Writing Tool</div>
+          <div class="project-desc">방해 없이 글쓰기에만 집중할 수 있는 미니멀 에디터. Markdown 지원.</div>
+          <div class="project-tags"><span class="project-tag">Vue.js</span><span class="project-tag">Markdown</span><span class="project-tag">Electron</span></div>
+        </a>
+        <a class="project-card" href="#">
+          <div class="project-icon">📸</div><div class="project-arrow">↗</div>
+          <div class="project-name">Film Photo Archive</div>
+          <div class="project-desc">필름 사진들을 날짜·장소별로 아카이빙하는 갤러리 사이트.</div>
+          <div class="project-tags"><span class="project-tag">HTML/CSS</span><span class="project-tag">Netlify</span><span class="project-tag">Photography</span></div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+  <footer>Copyright 2025 · Your Name · All rights reserved</footer>
+</main>
+
+</div><!-- /site-wrap -->
+
+<script>
+const POSTS=[
+  {id:1,cat:'일상',title:'조용한 오후의 풍경 — 글을 쓰기 가장 좋은 시간에 대하여',excerpt:'창문 너머로 햇살이 기울 때, 비로소 손가락이 키보드 위에서 움직이기 시작한다.',date:'2025. 7. 17',thumb:'t1'},
+  {id:2,cat:'개발',title:'GitHub Pages로 나만의 홈페이지 배포하기',excerpt:'도메인 구입 없이 무료로 개인 홈페이지를 배포하는 가장 간단한 방법을 정리했다.',date:'2024. 5. 3',thumb:'t2'},
+  {id:3,cat:'여행',title:'아이슬란드의 여름은 끝나지 않는다',excerpt:'자정의 태양이 지평선에 걸쳐 있던 그 밤을 아직도 선명하게 기억한다.',date:'2024. 5. 1',thumb:'t3'},
+  {id:4,cat:'사진',title:'필름 카메라로 담은 바닷가',excerpt:'디지털이 줄 수 없는 입자의 온도가 있다. 35mm 필름으로 기록한 풍경들.',date:'2024. 4. 20',thumb:'t4'},
+  {id:5,cat:'개발',title:'React에서 상태관리를 단순하게 유지하는 법',excerpt:'Zustand를 쓰기 전, Context로 충분한 경우가 생각보다 많다는 걸 깨달았다.',date:'2024. 4. 15',thumb:'t5'},
+  {id:6,cat:'일상',title:'커피 한 잔과 함께 읽는 책 목록',excerpt:'올해 읽었거나 읽고 있는 책들을 카테고리 없이 나열해 봤다.',date:'2024. 4. 10',thumb:'t6'},
+  {id:7,cat:'개발',title:'TypeScript 타입 체조 피하는 방법',excerpt:'과도한 제네릭보다 명확한 인터페이스가 팀 생산성에 훨씬 이롭다.',date:'2024. 3. 22',thumb:'t7'},
+  {id:8,cat:'여행',title:'후쿠오카 72시간 기록',excerpt:'라멘 골목, 온천, 모래사장. 짧지만 밀도 높았던 일정을 시간 순으로 정리했다.',date:'2024. 3. 10',thumb:'t2'},
+  {id:9,cat:'사진',title:'겨울 거리를 걷다',excerpt:'흑백으로 변환하면 도시의 소음도 조용해지는 것 같다.',date:'2024. 2. 28',thumb:'t3'},
+  {id:10,cat:'개발',title:'Vim 없이 터미널을 즐기는 법',excerpt:'굳이 Vim을 배우지 않아도 효율적인 터미널 워크플로우를 만들 수 있다.',date:'2024. 2. 14',thumb:'t1'},
+  {id:11,cat:'일상',title:'새벽 루틴을 바꿔보기로 했다',excerpt:'6개월간 매일 새벽 5시에 일어난 결과와 솔직한 후기.',date:'2024. 2. 1',thumb:'t5'},
+];
+
+let currentCat='all', currentView='gallery', searchQuery='';
+
+const galleryGrid=document.getElementById('galleryGrid');
+const listView=document.getElementById('listView');
+const postCount=document.getElementById('postCount');
+const btnGallery=document.getElementById('btnGallery');
+const btnList=document.getElementById('btnList');
+const searchInput=document.getElementById('searchInput');
+
+function getFiltered(){
+  return POSTS.filter(p=>{
+    const okCat=currentCat==='all'||p.cat===currentCat;
+    const q=searchQuery.toLowerCase();
+    const okSearch=!q||p.title.toLowerCase().includes(q)||p.excerpt.toLowerCase().includes(q);
+    return okCat&&okSearch;
+  });
+}
+
+function render(){
+  const posts=getFiltered();
+  postCount.textContent=posts.length+' posts';
+
+  // GALLERY
+  galleryGrid.innerHTML='';
+  const showFeatured=currentCat==='all'&&!searchQuery&&posts.length>0;
+  posts.forEach((p,i)=>{
+    const isFeat=showFeatured&&i===0;
+    const a=document.createElement('a');
+    a.className='post-card'+(isFeat?' card-featured':'');
+    a.href='#';
+    a.innerHTML=`
+      <div class="card-thumb ${p.thumb}"></div>
+      <div class="card-body">
+        <span class="card-tag">${p.cat}</span>
+        <div class="card-title">${p.title}</div>
+        ${isFeat?`<div class="card-excerpt">${p.excerpt}</div>`:''}
+        <div class="card-date">${p.date}</div>
+      </div>`;
+    galleryGrid.appendChild(a);
+  });
+
+  // LIST
+  listView.innerHTML='';
+  posts.forEach(p=>{
+    const a=document.createElement('a');
+    a.className='post-list-item';
+    a.href='#';
+    a.innerHTML=`
+      <div class="list-thumb ${p.thumb}"></div>
+      <div class="list-meta">
+        <div class="list-top"><span class="list-tag">${p.cat}</span></div>
+        <div class="list-title">${p.title}</div>
+        <div class="list-excerpt">${p.excerpt}</div>
+      </div>
+      <div class="list-date">${p.date}</div>`;
+    listView.appendChild(a);
+  });
+}
+
+function setView(v){
+  currentView=v;
+  if(v==='gallery'){
+    galleryGrid.classList.remove('hidden');
+    listView.classList.add('hidden');
+    btnGallery.classList.add('active');
+    btnList.classList.remove('active');
+  } else {
+    listView.classList.remove('hidden');
+    galleryGrid.classList.add('hidden');
+    btnList.classList.add('active');
+    btnGallery.classList.remove('active');
+  }
+}
+
+btnGallery.addEventListener('click',()=>setView('gallery'));
+btnList.addEventListener('click',()=>setView('list'));
+
+function setCat(cat){
+  currentCat=cat;
+  document.querySelectorAll('#filterTabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
+  document.querySelectorAll('#catList .cat-item').forEach(c=>c.classList.toggle('active',c.dataset.cat===cat));
+  render();
+}
+
+document.getElementById('filterTabs').addEventListener('click',e=>{
+  const b=e.target.closest('.tab-btn');
+  if(b)setCat(b.dataset.cat);
+});
+document.getElementById('catList').addEventListener('click',e=>{
+  const item=e.target.closest('.cat-item');
+  if(item){setCat(item.dataset.cat);closeSidebar();}
+});
+
+let st;
+searchInput.addEventListener('input',e=>{
+  clearTimeout(st);
+  st=setTimeout(()=>{searchQuery=e.target.value;render();},200);
+});
+
+// nav links active
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+    l.classList.add('active');
+    closeSidebar();
+  });
+});
+
+// Mobile sidebar
+const sidebar=document.getElementById('sidebar');
+const hamburger=document.getElementById('hamburger');
+const overlay=document.getElementById('sidebarOverlay');
+
+function openSidebar(){
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+  hamburger.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSidebar(){
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  hamburger.classList.remove('open');
+  document.body.style.overflow='';
+}
+hamburger.addEventListener('click',()=>sidebar.classList.contains('open')?closeSidebar():openSidebar());
+overlay.addEventListener('click',closeSidebar);
+
+render();
+</script>
+</body>
+</html>
